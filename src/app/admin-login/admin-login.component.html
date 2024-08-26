@@ -1,0 +1,36 @@
+<mat-card class="form-wrapper">
+  <mat-card-header>
+    <mat-card-title>{{ title }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content class="content">
+    <form class="form-group mb-20px" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <mat-form-field class="">
+        <mat-label>Email</mat-label>
+        <input type="email" id="email" matInput formControlName="email" placeholder="admin-name@example.com">
+        @if (email?.hasError('email')) {
+          <mat-error>Please enter a valid email address</mat-error>
+        }
+        @if (email?.hasError('required') || email?.touched && !email?.dirty) {
+          <mat-error>Email is <strong>required</strong></mat-error>
+        }
+        @if (email?.hasError('maxlength')){
+          <mat-error>Email is <strong>Please enter no more than 40 characters</strong></mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field class="">
+        <mat-label>Password</mat-label>
+        <input type="password" id="password" matInput formControlName="password" placeholder="12345qwert">
+        @if (password?.hasError('required') || password?.touched && !password?.dirty) {
+          <mat-error>Password <strong>required</strong></mat-error>
+        }
+        @if (password?.hasError('maxlength')){
+          <mat-error>Email is <strong>Please enter no more than 40 characters</strong></mat-error>
+        }
+      </mat-form-field>
+    </form>
+  </mat-card-content>
+  <mat-card-actions class="action-group" align="end">
+    <button mat-button (click)=onSubmit() type="submit" [disabled]="disable | async">Submit</button>
+  </mat-card-actions>
+</mat-card>

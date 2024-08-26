@@ -1,6 +1,9 @@
 import { Routes } from '@angular/router';
-import { PerformersListComponent } from './performers-list/performers-list.component';
+import { MainComponent } from './main/main.component';
+import { AdminLoginComponent } from './admin-login/admin-login.component';
 
 export const routes: Routes = [
-  { path: '', component: PerformersListComponent},
+  { path: '', component: MainComponent},
+  { path: 'login-admin', component: AdminLoginComponent }, // Добавьте маршрут для LoginAdmin
+  { path: '**', redirectTo: '' }
 ];

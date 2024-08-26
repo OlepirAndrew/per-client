@@ -1,7 +1,0 @@
-<p>performers-list works!</p>
-
-<div class="performers-container">
-  @for (performer of performers$ | async; track performer.id) {
-    <app-performer [performer] = 'performer'></app-performer>
-  }
-</div>

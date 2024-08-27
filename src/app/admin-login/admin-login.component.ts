@@ -83,7 +83,10 @@ export class AdminLoginComponent {
       .pipe(take(1))
       .subscribe({
         next: () => this.onReset(),
-        error: () => this.onReset()
+        error: (err) => {
+          this.disable.next(false);
+          console.log('ERR', err)
+        }
       }
     )
   }

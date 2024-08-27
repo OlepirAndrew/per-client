@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import {  MatCardModule} from '@angular/material/card';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
+import { MatCardModule} from '@angular/material/card';
 import { MatError, MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
 import {
   FormControl,
@@ -13,7 +13,13 @@ import { MatButton } from '@angular/material/button';
 import { AsyncPipe, JsonPipe } from '@angular/common';
 import { ILogin, LoginService } from './service/login.service';
 import { BehaviorSubject, take } from 'rxjs';
+import { TokenService } from '../shared/service/token.service';
 
+interface IAuthErrors {
+  status: string,
+  statusText: string,
+  message: string
+}
 
 interface Login {
   email: FormControl<string>;
@@ -38,12 +44,15 @@ interface Login {
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './admin-login.component.html',
   styleUrl: './admin-login.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminLoginComponent {
   title = 'Admin Login'
+  errorTitle = 'Authentication error';
+  authErrors: IAuthErrors | null = null;
   loginForm: FormGroup<Login>;
   disable: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  tokenService = inject(TokenService);
 
   constructor(
     private formBuilder: NonNullableFormBuilder,
@@ -84,8 +93,13 @@ export class AdminLoginComponent {
       .subscribe({
         next: () => this.onReset(),
         error: (err) => {
-          this.disable.next(false);
-          console.log('ERR', err)
+          const mesErr = {
+            message: err.error.message,
+            status: err.status,
+            statusText: err.statusText,
+          }
+
+          this.authErrors = {...mesErr};
         }
       }
     )
@@ -94,5 +108,10 @@ export class AdminLoginComponent {
   onReset() {
     this.disable.next(false);
     this.loginForm.reset();
+    this.authErrors = null;
+  }
+
+  clearToken() {
+    this.tokenService.removeToken()
   }
 }

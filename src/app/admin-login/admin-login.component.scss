@@ -8,6 +8,7 @@
 .form-wrapper {
   border-radius: 0;
   min-width: 600px;
+  position: relative;
 }
 
 .form-group {
@@ -21,4 +22,11 @@
 
 .action-group {
 
+}
+
+.error {
+  top: 20%;
+  border-radius: 0;
+  width: 100%;
+  position: absolute;
 }

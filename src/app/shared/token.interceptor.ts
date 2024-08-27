@@ -1,9 +1,9 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { TokenService } from './token.service';
+import { TokenService } from './service/token.service';
 
 export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
-  const token = inject(TokenService).getToken() || 'abracadabra';
+  const token = inject(TokenService).getToken() || null;
 
   const authReq = req.clone({
     setHeaders: {
@@ -11,6 +11,5 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
     }
   });
 
-  console.log('authReq', authReq)
   return next(authReq);
 };

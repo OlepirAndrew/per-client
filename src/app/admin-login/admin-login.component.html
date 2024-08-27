@@ -1,4 +1,4 @@
-<mat-card class="form-wrapper">
+<mat-card class="form-wrapper" appearance="outlined">
   <mat-card-header>
     <mat-card-title>{{ title }}</mat-card-title>
   </mat-card-header>
@@ -33,4 +33,23 @@
   <mat-card-actions class="action-group" align="end">
     <button mat-button (click)=onSubmit() type="submit" [disabled]="disable | async">Submit</button>
   </mat-card-actions>
+  @if (authErrors) {
+    <mat-card appearance="outlined" class="error">
+      <mat-card-header>
+        <mat-card-title>{{errorTitle}}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>{{authErrors.statusText}} {{authErrors.status}}</p>
+        <p>{{authErrors.message}}</p>
+      </mat-card-content>
+      <mat-card-actions class="action-group" align="end">
+        <button mat-button (click)="onReset()">Ok</button>
+      </mat-card-actions>
+    </mat-card>
+  }
 </mat-card>
+
+<button (click)="clearToken()">
+  clear token
+</button>
+

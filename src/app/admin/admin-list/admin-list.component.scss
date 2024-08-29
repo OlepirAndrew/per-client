@@ -1,0 +1,24 @@
+.table-wrapper {
+  margin: 20px;
+}
+
+.demo-table {
+  width: 50%;
+}
+
+.demo-button-container {
+  padding-bottom: 16px;
+}
+
+.demo-button + .demo-button {
+  margin-left: 8px;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.action-group {
+  margin-bottom: 20px;
+  border: 1px solid red;
+}

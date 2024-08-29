@@ -1,16 +1,14 @@
-import { LoginService } from '../admin-login/service/login.service';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { TokenService } from '../shared/service/token.service';
 
 export const adminAuthGuard = (): boolean => {
-  const loginService = inject(LoginService);
   const tokenService = inject(TokenService);
   const router = inject(Router);
 
-  const isAuth = Boolean(tokenService.getToken())
+  const isAuth = tokenService.isAuthenticated()
 
-  if(!isAuth && tokenService.isBrowser()){
+  if(!tokenService.isAuthenticated() && tokenService.isBrowser()){
     router.navigate(['/admin-login']);
   }
 

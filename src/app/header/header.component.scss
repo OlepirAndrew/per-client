@@ -1,3 +1,32 @@
-:host {
-  background-color: aqua;
+//:host {
+//  background-color: aqua;
+//}
+
+:host ::ng-deep  {
+  background-color: #333;
+  padding: 15px;
+  color: white;
+  display: block; // Ensures that :host acts like a block element for padding to apply
+
+  nav {
+    .content {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+
+      li {
+        margin-right: 15px;
+
+        a {
+          color: inherit; // Inherits the color from :host
+          text-decoration: none;
+        }
+
+        a:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
 }

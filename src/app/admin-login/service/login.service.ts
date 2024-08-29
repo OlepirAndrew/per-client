@@ -18,10 +18,6 @@ export class LoginService {
   private http = inject(HttpClient);
   private tokenService = inject(TokenService);
 
-  get isAuthenticated(): boolean {
-      return Boolean(this.tokenService.getToken())
-  }
-
   login$(login: ILogin) {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',

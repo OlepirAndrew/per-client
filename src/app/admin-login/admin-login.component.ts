@@ -1,29 +1,31 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
 import { MatCardModule} from '@angular/material/card';
-import { MatError, MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
+import { MatFormField } from '@angular/material/form-field';
 import {
   FormControl,
   FormGroup,
-  NonNullableFormBuilder,
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
-import { MatInput } from '@angular/material/input';
-import { MatButton } from '@angular/material/button';
 import { AsyncPipe, JsonPipe } from '@angular/common';
 import { ILogin, LoginService } from './service/login.service';
 import { BehaviorSubject, take } from 'rxjs';
 import { TokenService } from '../shared/service/token.service';
+import { InputComponent } from '../shared/input/input.component';
+import { MatButton } from '@angular/material/button';
+import { ServerStatusComponent } from '../shared/severe-status/server-status.component';
 
-interface IAuthErrors {
+
+export interface IAuthErrors {
+  title: string,
   status: string,
   statusText: string,
   message: string
 }
 
 interface Login {
-  email: FormControl<string>;
-  password: FormControl<string>;
+  email: FormControl<string | null>;
+  password: FormControl<string | null>;
 }
 
 @Component({
@@ -33,13 +35,11 @@ interface Login {
     MatCardModule,
     ReactiveFormsModule,
     MatFormField,
-    MatInput,
-    MatButton,
-    MatHint,
-    MatError,
-    MatLabel,
     JsonPipe,
     AsyncPipe,
+    InputComponent,
+    MatButton,
+    ServerStatusComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './admin-login.component.html',
@@ -47,38 +47,41 @@ interface Login {
 })
 export class AdminLoginComponent {
   title = 'Admin Login'
-  errorTitle = 'Authentication error';
   authErrors: IAuthErrors | null = null;
-  loginForm: FormGroup<Login>;
+  form: FormGroup<Login>;
   disable: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   tokenService = inject(TokenService);
 
   constructor(
-    private formBuilder: NonNullableFormBuilder,
     private loginService: LoginService,
     ) {
-    this.loginForm = this.formBuilder.group({
-      email: ['', [Validators.required,
+    this.form = new FormGroup<Login>({
+      email: new FormControl('', [
+        Validators.required,
         // Validators.email,
-        Validators.maxLength(40)]],
-      password:  ['', [Validators.required, Validators.maxLength(40)]]
+        Validators.maxLength(255)
+      ]),
+      password: new FormControl('', [
+        Validators.required,
+        Validators.maxLength(255)
+      ])
     });
   }
 
   get email() {
-    return this.loginForm.get('email');
+    return this.form.controls['email'];
   }
 
   get password() {
-    return this.loginForm.get('password');
+    return this.form.controls['password'];
   }
 
   onSubmit() {
-    if (this.loginForm.invalid)  {
-      for (const key in this.loginForm.controls) {
-        if (!this.loginForm.get(key)?.dirty) {
-          this.loginForm.get(key)?.markAsTouched()
+    if (this.form.invalid)  {
+      for (const key in this.form.controls) {
+        if (!this.form.get(key)?.dirty) {
+          this.form.get(key)?.markAsTouched()
         }
       }
 
@@ -86,7 +89,7 @@ export class AdminLoginComponent {
     }
     this.disable.next(true);
 
-    const login = <ILogin>this.loginForm.value;
+    const login = <ILogin>this.form.value;
 
     this.loginService.login$(login)
       .pipe(take(1))
@@ -94,6 +97,7 @@ export class AdminLoginComponent {
         next: () => this.onReset(),
         error: (err) => {
           const mesErr = {
+            title: 'Authentication error',
             message: err.error.message,
             status: err.status,
             statusText: err.statusText,
@@ -107,7 +111,7 @@ export class AdminLoginComponent {
 
   onReset() {
     this.disable.next(false);
-    this.loginForm.reset();
+    this.form.reset();
     this.authErrors = null;
   }
 

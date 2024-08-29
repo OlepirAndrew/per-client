@@ -1,5 +1,6 @@
 import { Inject, Injectable, makeStateKey, PLATFORM_ID, TransferState } from '@angular/core';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
 
 
 @Injectable({
@@ -12,6 +13,28 @@ export class TokenService {
     private transferState: TransferState,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
+
+  isAuthenticated(): boolean {
+    const token = this.getToken();
+    if (!token) {
+      return false;
+    }
+
+    try {
+      const decoded: JwtPayload = jwtDecode(token);
+
+      if (!decoded.exp) {
+        return false;
+      }
+
+      const currentTime = Math.floor(Date.now() / 1000);
+      return decoded.exp > currentTime;
+    } catch (error) {
+      this.removeToken()
+      return false;
+    }
+
+  }
 
   isBrowser(){
     return isPlatformBrowser(this.platformId)
@@ -45,3 +68,4 @@ export class TokenService {
     }
   }
 }
+

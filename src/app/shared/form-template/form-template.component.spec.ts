@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AdminComponent } from './admin.component';
+import { FormTemplateComponent } from './form-template.component';
 
-describe('AdminComponent', () => {
-  let component: AdminComponent;
-  let fixture: ComponentFixture<AdminComponent>;
+describe('FormTemplateComponent', () => {
+  let component: FormTemplateComponent;
+  let fixture: ComponentFixture<FormTemplateComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AdminComponent]
+      imports: [FormTemplateComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AdminComponent);
+    fixture = TestBed.createComponent(FormTemplateComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

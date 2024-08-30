@@ -1,0 +1,12 @@
+<mat-card class="error">
+  <mat-card-header>
+    <mat-card-title>{{status.title}}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <p>{{status.statusText}} {{status.status}}</p>
+    <p>{{status.message}}</p>
+  </mat-card-content>
+  <mat-card-actions class="action-group" align="end">
+    <button mat-button (click)="reset.emit()">Ok</button>
+  </mat-card-actions>
+</mat-card>

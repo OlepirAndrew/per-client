@@ -1,0 +1,15 @@
+<mat-form-field class="form">
+    <mat-label>{{label | titlecase}}</mat-label>
+    <input class="input" [type]="type" matInput [formControl]="control"
+           [placeholder]="placeholder">
+    @if (control.hasError(errorName)  && errorMessage) {
+      <mat-error>{{errorMessage}}</mat-error>
+    }
+    @if (control.hasError('required')) {
+      <mat-error>{{label | titlecase }} is <strong>required</strong></mat-error>
+    }
+    @if (control.hasError('maxlength')) {
+        <mat-error>Please enter no more than <strong>255 characters</strong></mat-error>
+    }
+</mat-form-field>
+

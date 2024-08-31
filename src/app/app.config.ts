@@ -6,6 +6,7 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 import { CommonModule } from '@angular/common';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { tokenInterceptor } from './shared/token.interceptor';
+import { httpStatusInterceptor } from './shared/http-status.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,7 +19,10 @@ export const appConfig: ApplicationConfig = {
     ),
     provideHttpClient(
       withFetch(),
-      withInterceptors([tokenInterceptor])
+      withInterceptors([
+        tokenInterceptor,
+        httpStatusInterceptor
+      ])
     ),
     CommonModule,
     provideAnimations()

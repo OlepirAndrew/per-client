@@ -13,16 +13,7 @@ import { BehaviorSubject, take } from 'rxjs';
 import { TokenService } from '../shared/service/token.service';
 import { InputComponent } from '../shared/input/input.component';
 import { MatButton } from '@angular/material/button';
-import { ServerStatusComponent } from '../shared/severe-status/server-status.component';
-import { v4 as uuidv4 } from 'uuid';
-
-
-export interface IAuthErrors {
-  title: string,
-  status: string,
-  statusText: string,
-  message: string
-}
+import { SnackBarService } from '../shared/service/snack-bar.service';
 
 interface Login {
   email: FormControl<string | null>;
@@ -40,7 +31,6 @@ interface Login {
     AsyncPipe,
     InputComponent,
     MatButton,
-    ServerStatusComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './admin-login.component.html',
@@ -48,11 +38,11 @@ interface Login {
 })
 export class AdminLoginComponent {
   title = 'Admin Login'
-  authErrors: IAuthErrors | null = null;
   form: FormGroup<Login>;
   disable: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   tokenService = inject(TokenService);
+  snackBarService = inject(SnackBarService);
 
   constructor(
     private loginService: LoginService,
@@ -96,16 +86,7 @@ export class AdminLoginComponent {
       .pipe(take(1))
       .subscribe({
         next: () => this.onReset(),
-        error: (err) => {
-          const mesErr = {
-            title: 'Authentication error',
-            message: err.error.message,
-            status: err.status,
-            statusText: err.statusText,
-          }
-
-          this.authErrors = {...mesErr};
-        }
+        error: (err) => this.onReset()
       }
     )
   }
@@ -113,7 +94,6 @@ export class AdminLoginComponent {
   onReset() {
     this.disable.next(false);
     this.form.reset();
-    this.authErrors = null;
   }
 
   clearToken() {
@@ -127,5 +107,9 @@ export class AdminLoginComponent {
 
 
     this.form.patchValue({email, password});
+  }
+
+  openSnackBar() {
+    this.snackBarService.openSnackBar('abra', 'Ok');
   }
 }

@@ -4,13 +4,11 @@ import { InputComponent } from '../../shared/input/input.component';
 import { MatButton } from '@angular/material/button';
 import { MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/material/card';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { BehaviorSubject, filter, map, shareReplay, switchMap, take, tap } from 'rxjs';
+import { BehaviorSubject, filter, map, switchMap, take, tap } from 'rxjs';
 import { ILogin, LoginService } from '../../admin-login/service/login.service';
-import { IAuthErrors } from '../../admin-login/admin-login.component';
 import { ActivatedRoute } from '@angular/router';
 import { AdminService } from '../service/admin.service';
 import { IAdmin } from '../service/admin';
-import { ServerStatusComponent } from '../../shared/severe-status/server-status.component';
 import { v4 as uuidv4 } from 'uuid';
 
 export interface INewAdminDate {
@@ -39,14 +37,12 @@ interface AdminForm {
     MatCardHeader,
     MatCardTitle,
     ReactiveFormsModule,
-    ServerStatusComponent
   ],
   templateUrl: './admin-page.component.html',
   styleUrl: './admin-page.component.scss'
 })
 export class AdminPageComponent implements OnInit{
   title= ''
-  authErrors: IAuthErrors | null = null;
   form!: FormGroup<AdminForm>;
   disable: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
@@ -68,7 +64,7 @@ export class AdminPageComponent implements OnInit{
         Validators.email,
         Validators.maxLength(255)
       ]),
-      password: new FormControl(this.admin.password, [
+      password: new FormControl('', [
         Validators.required,
         Validators.maxLength(255)
       ]),
@@ -76,7 +72,6 @@ export class AdminPageComponent implements OnInit{
   }
 
   ngOnInit() {
-
     this.route.url.pipe(
       map(segments => segments.some(segment => segment.path === 'edit')),
       tap(isEdit => this.title = isEdit? 'Edit Admin' : 'Add Admin'),
@@ -94,15 +89,7 @@ export class AdminPageComponent implements OnInit{
 
         this.updateForm();
       },
-      error: (err) => {
-        const mesErr = {
-          title: 'Authentication error',
-          message: err.error.message,
-          status: err.status,
-          statusText: err.statusText,
-        }
-        this.authErrors = {...mesErr};
-      }}
+    }
     )
   }
 
@@ -135,8 +122,6 @@ export class AdminPageComponent implements OnInit{
 
     this.disable.next(true);
 
-    // const actionName = this.isAdminEdit?  'editAdmin$' : 'addAdmin$'
-
     const newAdminDate = {
       ...this.isAdminEdit && {id: this.admin.id},
       ...this.form.value
@@ -146,18 +131,7 @@ export class AdminPageComponent implements OnInit{
       .pipe(take(1))
       .subscribe({
           next: () => this.onReset(),
-          error: (err) => {
-            console.log('ERROR', err)
-            const mesErr = {
-              title: 'Authentication error',
-              message: err.error.message,
-              status: err.status,
-              statusText: err.statusText,
-            }
-
-            this.authErrors = {...mesErr};
-            console.log('authErrors', this.authErrors)
-          }
+          error: (err) =>  this.disable.next(false)
         }
       )
   }
@@ -165,35 +139,34 @@ export class AdminPageComponent implements OnInit{
   onReset() {
     this.disable.next(false);
     this.form.reset();
-    this.authErrors = null;
   }
 
   generate() {
-    // const name = `admin1_${uuidv4().slice(0, 8)}`;
-    // const email = `${name}@example.com`;
-    // const password = 'email';
+    const name = `admin1_${uuidv4().slice(0, 8)}`;
+    const email = `${name}@example.com`;
+    const password = name;
 
 
 
-    // this.form.patchValue({name, email, password});
+    this.form.patchValue({name, email, password});
 
-    let counter = 0
-    const interval = setInterval(() => {
-      counter++
-
-      const name = `admin1_${uuidv4().slice(0, 8)}`;
-      const email = `${name}@example.com`;
-      const password = 'email';
-
-
-
-      this.form.patchValue({name, email, password});
-
-      this.onSubmit();
-
-      if (counter === 100) {
-        clearInterval(interval);
-      }
-    }, 500)
+    // let counter = 0
+    // const interval = setInterval(() => {
+    //   counter++
+    //
+    //   const name = `admin1_${uuidv4().slice(0, 8)}`;
+    //   const email = `${name}@example.com`;
+    //   const password = 'email';
+    //
+    //
+    //
+    //   this.form.patchValue({name, email, password});
+    //
+    //   this.onSubmit();
+    //
+    //   if (counter === 100) {
+    //     clearInterval(interval);
+    //   }
+    // }, 500)
   }
 }

@@ -26,12 +26,5 @@
         </td>
       </ng-container>
     }
-
   </table>
-  @if (authErrors) {
-    <app-server-status
-      [status]="authErrors"
-      (reset)="onReset()"
-    ></app-server-status>
-  }
 </div>

@@ -4,7 +4,23 @@ html, body {
 
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+.success-snackbar.mat-mdc-snack-bar-container {
+  .mdc-snackbar__surface {
+    background-color: #339900;
 
-.mdc-text-field--filled:not(.mdc-text-field--disabled)  {
-  //background-color: #F5F5F5 !important;
+    .mat-mdc-button {
+      color: white !important;
+    }
+  }
+}
+
+.error-snackbar.mat-mdc-snack-bar-container {
+  .mdc-snackbar__surface {
+    background: 	#cc3300;
+    color: black;
+
+    .mat-mdc-button {
+      color: black !important;
+    }
+  }
 }

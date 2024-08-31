@@ -7,9 +7,14 @@ import { AsyncPipe, NgClass, NgForOf, NgSwitch, NgSwitchCase, NgSwitchDefault, T
 import { MatButton } from '@angular/material/button';
 import { IAdmin } from '../service/admin';
 import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject, take } from 'rxjs';
+import { IAuthErrors } from '../../admin-login/admin-login.component';
+import { ServerStatusComponent } from '../../shared/severe-status/server-status.component';
+
+type ReflectAdmin = Omit<IAdmin, 'password'>
 
 @Component({
-  imports: [MatTableModule, MatCheckboxModule, NgClass, MatButton, AsyncPipe, NgSwitch, NgForOf, TitleCasePipe, NgSwitchCase, NgSwitchDefault],
+  imports: [MatTableModule, MatCheckboxModule, NgClass, MatButton, AsyncPipe, NgSwitch, NgForOf, TitleCasePipe, NgSwitchCase, NgSwitchDefault, ServerStatusComponent],
   selector: 'app-admin-list',
   standalone: true,
   templateUrl: './admin-list.component.html',
@@ -19,19 +24,44 @@ export class AdminListComponent implements OnInit {
   adminService = inject(AdminService);
   router = inject(Router);
   route = inject(ActivatedRoute);
-  displayedColumns: string[] = ['id', 'name', 'email', 'password', 'lastLogin', 'createdAt', 'updatedAt', 'actions'];
-  adminList!:MatTableDataSource<IAdmin>;
+  displayedColumns: string[] = ['id', 'name', 'email', 'lastLogin', 'createdAt', 'updatedAt', 'actions'];
+  adminList!:MatTableDataSource<ReflectAdmin>;
+  disable: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  authErrors: IAuthErrors | null = null;
 
   ngOnInit() {
     this.adminService.getAdmins$().subscribe(admins => {
-      this.adminList = new MatTableDataSource<IAdmin>(admins)
+      console.log(admins);
+      this.adminList = new MatTableDataSource<ReflectAdmin>(admins)
     })
   }
 
 
   onDelete(admin: IAdmin) {
-    console.log(admin)
-    this.adminList.data = this.adminList.data.filter(a => a.id !== admin.id);
+    this.disable.next(true);
+    this.adminService.delete(admin)
+      .pipe(take(1)).subscribe({
+      next: (admins) => {
+        this.adminList = new MatTableDataSource<ReflectAdmin>(admins);
+        this.onReset();
+      },
+      error: (err) => {
+        const mesErr = {
+          title: 'Authentication error',
+          message: err.error.message,
+          status: err.status,
+          statusText: err.statusText,
+        }
+
+        this.authErrors = {...mesErr};
+      }
+    });
+  }
+
+  onReset() {
+    this.disable.next(false);
+
+    this.authErrors = null;
   }
 
   edit(admin: IAdmin) {

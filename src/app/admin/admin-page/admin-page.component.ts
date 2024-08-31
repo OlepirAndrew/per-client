@@ -5,13 +5,13 @@ import { MatButton } from '@angular/material/button';
 import { MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/material/card';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BehaviorSubject, filter, map, shareReplay, switchMap, take, tap } from 'rxjs';
-import { TokenService } from '../../shared/service/token.service';
 import { ILogin, LoginService } from '../../admin-login/service/login.service';
 import { IAuthErrors } from '../../admin-login/admin-login.component';
 import { ActivatedRoute } from '@angular/router';
 import { AdminService } from '../service/admin.service';
 import { IAdmin } from '../service/admin';
- import { ServerStatusComponent } from '../../shared/severe-status/server-status.component';
+import { ServerStatusComponent } from '../../shared/severe-status/server-status.component';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface INewAdminDate {
   id?: number,
@@ -65,10 +65,10 @@ export class AdminPageComponent implements OnInit{
       ]),
       email: new FormControl(this.admin?.email, [
         Validators.required,
-        // Validators.email,
+        Validators.email,
         Validators.maxLength(255)
       ]),
-      password: new FormControl(this.admin?.password, [
+      password: new FormControl(this.admin.password, [
         Validators.required,
         Validators.maxLength(255)
       ]),
@@ -135,16 +135,14 @@ export class AdminPageComponent implements OnInit{
 
     this.disable.next(true);
 
-    const actionName = this.isAdminEdit?  'editAdmin$' : 'addAdmin$'
+    // const actionName = this.isAdminEdit?  'editAdmin$' : 'addAdmin$'
 
-    const newAdminDAte = {
+    const newAdminDate = {
       ...this.isAdminEdit && {id: this.admin.id},
       ...this.form.value
     } as INewAdminDate ;
 
-    console.log('newAdminDAte', newAdminDAte)
-
-    this.adminService[actionName](newAdminDAte)
+    this.adminService.submitAdmin$(newAdminDate, this.isAdminEdit ?  'edit' : 'add')
       .pipe(take(1))
       .subscribe({
           next: () => this.onReset(),
@@ -168,5 +166,34 @@ export class AdminPageComponent implements OnInit{
     this.disable.next(false);
     this.form.reset();
     this.authErrors = null;
+  }
+
+  generate() {
+    // const name = `admin1_${uuidv4().slice(0, 8)}`;
+    // const email = `${name}@example.com`;
+    // const password = 'email';
+
+
+
+    // this.form.patchValue({name, email, password});
+
+    let counter = 0
+    const interval = setInterval(() => {
+      counter++
+
+      const name = `admin1_${uuidv4().slice(0, 8)}`;
+      const email = `${name}@example.com`;
+      const password = 'email';
+
+
+
+      this.form.patchValue({name, email, password});
+
+      this.onSubmit();
+
+      if (counter === 100) {
+        clearInterval(interval);
+      }
+    }, 500)
   }
 }

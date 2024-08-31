@@ -17,7 +17,7 @@
         <td mat-cell *matCellDef="let element">
           @switch (column) {
             @case ('actions') {
-              <button mat-button color="warn" (click)="onDelete(element); $event.stopPropagation()">Delete</button>
+              <button mat-button color="warn" [disabled]="disable | async" (click)="onDelete(element); $event.stopPropagation()">Delete</button>
             }
             @default {
               {{ element[column] || (column === 'lastLogin' ? 'Never' : '') }}
@@ -28,4 +28,10 @@
     }
 
   </table>
+  @if (authErrors) {
+    <app-server-status
+      [status]="authErrors"
+      (reset)="onReset()"
+    ></app-server-status>
+  }
 </div>

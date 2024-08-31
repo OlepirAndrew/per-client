@@ -14,6 +14,7 @@ import { TokenService } from '../shared/service/token.service';
 import { InputComponent } from '../shared/input/input.component';
 import { MatButton } from '@angular/material/button';
 import { ServerStatusComponent } from '../shared/severe-status/server-status.component';
+import { v4 as uuidv4 } from 'uuid';
 
 
 export interface IAuthErrors {
@@ -117,5 +118,14 @@ export class AdminLoginComponent {
 
   clearToken() {
     this.tokenService.removeToken()
+  }
+
+  login() {
+    const email = 'admin@admin';
+    const password = 'admin@admin';
+
+
+
+    this.form.patchValue({email, password});
   }
 }

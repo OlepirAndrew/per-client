@@ -145,9 +145,6 @@ export class AdminPageComponent implements OnInit{
     const name = `admin1_${uuidv4().slice(0, 8)}`;
     const email = `${name}@example.com`;
     const password = name;
-
-
-
     this.form.patchValue({name, email, password});
 
     // let counter = 0

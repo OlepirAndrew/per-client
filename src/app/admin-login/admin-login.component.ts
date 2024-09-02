@@ -13,7 +13,6 @@ import { BehaviorSubject, take } from 'rxjs';
 import { TokenService } from '../shared/service/token.service';
 import { InputComponent } from '../shared/input/input.component';
 import { MatButton } from '@angular/material/button';
-import { SnackBarService } from '../shared/service/snack-bar.service';
 
 interface Login {
   email: FormControl<string | null>;
@@ -42,7 +41,6 @@ export class AdminLoginComponent {
   disable: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   tokenService = inject(TokenService);
-  snackBarService = inject(SnackBarService);
 
   constructor(
     private loginService: LoginService,
@@ -50,7 +48,7 @@ export class AdminLoginComponent {
     this.form = new FormGroup<Login>({
       email: new FormControl('', [
         Validators.required,
-        // Validators.email,
+        Validators.email,
         Validators.maxLength(255)
       ]),
       password: new FormControl('', [
@@ -86,7 +84,7 @@ export class AdminLoginComponent {
       .pipe(take(1))
       .subscribe({
         next: () => this.onReset(),
-        error: (err) => this.onReset()
+        error: () => this.disable.next(false)
       }
     )
   }
@@ -96,6 +94,7 @@ export class AdminLoginComponent {
     this.form.reset();
   }
 
+  // ----delete----->
   clearToken() {
     this.tokenService.removeToken()
   }
@@ -103,13 +102,7 @@ export class AdminLoginComponent {
   login() {
     const email = 'admin@admin';
     const password = 'admin@admin';
-
-
-
     this.form.patchValue({email, password});
   }
-
-  openSnackBar() {
-    this.snackBarService.openSnackBar('abra', 'Ok');
-  }
+ //------>
 }

@@ -17,10 +17,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .error-snackbar.mat-mdc-snack-bar-container {
   .mdc-snackbar__surface {
     background: 	#cc3300;
-    color: black;
 
     .mat-mdc-button {
-      color: black !important;
+      color: white !important;
     }
   }
 }

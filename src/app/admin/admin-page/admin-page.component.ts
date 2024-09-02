@@ -142,28 +142,28 @@ export class AdminPageComponent implements OnInit{
   }
 
   generate() {
-    const name = `admin1_${uuidv4().slice(0, 8)}`;
-    const email = `${name}@example.com`;
-    const password = name;
-    this.form.patchValue({name, email, password});
+    // const name = `admin1_${uuidv4().slice(0, 8)}`;
+    // const email = `${name}@example.com`;
+    // const password = name;
+    // this.form.patchValue({name, email, password});
 
-    // let counter = 0
-    // const interval = setInterval(() => {
-    //   counter++
-    //
-    //   const name = `admin1_${uuidv4().slice(0, 8)}`;
-    //   const email = `${name}@example.com`;
-    //   const password = 'email';
-    //
-    //
-    //
-    //   this.form.patchValue({name, email, password});
-    //
-    //   this.onSubmit();
-    //
-    //   if (counter === 100) {
-    //     clearInterval(interval);
-    //   }
-    // }, 500)
+    let counter = 0
+    const interval = setInterval(() => {
+      counter++
+
+      const name = `admin1_${uuidv4().slice(0, 8)}`;
+      const email = `${name}@example.com`;
+      const password = 'email';
+
+
+
+      this.form.patchValue({name, email, password});
+
+      this.onSubmit();
+
+      if (counter === 100) {
+        clearInterval(interval);
+      }
+    }, 500)
   }
 }

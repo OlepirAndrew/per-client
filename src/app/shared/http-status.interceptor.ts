@@ -13,7 +13,7 @@ export function httpStatusInterceptor(req: HttpRequest<unknown>, next: HttpHandl
 
 
   return next(req).pipe(
-    tap(x => console.log('XXX', x)),
+    // tap(x => console.log('XXX', x)),
     catchError((error: HttpErrorResponse) => {
       snackBarService.openSnackBar(
         `${error.error.statusCode || error.error.status} ${error.error.message}`,

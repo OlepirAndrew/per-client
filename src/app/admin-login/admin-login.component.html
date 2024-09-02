@@ -25,12 +25,6 @@
     <button mat-button (click)=onSubmit() type="submit" [disabled]="disable | async">Submit</button>
   </mat-card-actions>
 
-  @if (authErrors) {
-    <app-server-status
-    [status]="authErrors"
-    (reset)="onReset()"
-    ></app-server-status>
-  }
 </mat-card>
 
 <button (click)="clearToken()">
@@ -40,4 +34,3 @@
 <button (click)="login()">
   Login
 </button>
-

@@ -13,16 +13,6 @@ import { BehaviorSubject, take } from 'rxjs';
 import { TokenService } from '../shared/service/token.service';
 import { InputComponent } from '../shared/input/input.component';
 import { MatButton } from '@angular/material/button';
-import { ServerStatusComponent } from '../shared/severe-status/server-status.component';
-import { v4 as uuidv4 } from 'uuid';
-
-
-export interface IAuthErrors {
-  title: string,
-  status: string,
-  statusText: string,
-  message: string
-}
 
 interface Login {
   email: FormControl<string | null>;
@@ -40,7 +30,6 @@ interface Login {
     AsyncPipe,
     InputComponent,
     MatButton,
-    ServerStatusComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './admin-login.component.html',
@@ -48,7 +37,6 @@ interface Login {
 })
 export class AdminLoginComponent {
   title = 'Admin Login'
-  authErrors: IAuthErrors | null = null;
   form: FormGroup<Login>;
   disable: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
@@ -60,7 +48,7 @@ export class AdminLoginComponent {
     this.form = new FormGroup<Login>({
       email: new FormControl('', [
         Validators.required,
-        // Validators.email,
+        Validators.email,
         Validators.maxLength(255)
       ]),
       password: new FormControl('', [
@@ -96,16 +84,7 @@ export class AdminLoginComponent {
       .pipe(take(1))
       .subscribe({
         next: () => this.onReset(),
-        error: (err) => {
-          const mesErr = {
-            title: 'Authentication error',
-            message: err.error.message,
-            status: err.status,
-            statusText: err.statusText,
-          }
-
-          this.authErrors = {...mesErr};
-        }
+        error: () => this.disable.next(false)
       }
     )
   }
@@ -113,9 +92,9 @@ export class AdminLoginComponent {
   onReset() {
     this.disable.next(false);
     this.form.reset();
-    this.authErrors = null;
   }
 
+  // ----delete----->
   clearToken() {
     this.tokenService.removeToken()
   }
@@ -123,9 +102,7 @@ export class AdminLoginComponent {
   login() {
     const email = 'admin@admin';
     const password = 'admin@admin';
-
-
-
     this.form.patchValue({email, password});
   }
+ //------>
 }

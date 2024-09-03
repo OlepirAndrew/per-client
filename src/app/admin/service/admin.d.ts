@@ -8,15 +8,9 @@ export interface IAdmin {
   "updatedAt": string,
 }
 
-
 export interface IAdminPages {
   admins: IAdmin[];
   meta: {
-    page: number,
-    take: number,
     itemCount: number,
-    pageCount: number,
-    hasPreviousPage: boolean,
-    hasNextPage: boolean
   }
 }

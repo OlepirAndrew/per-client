@@ -141,12 +141,7 @@ export class AdminPageComponent implements OnInit{
     this.form.reset();
   }
 
-  generate() {
-    // const name = `admin1_${uuidv4().slice(0, 8)}`;
-    // const email = `${name}@example.com`;
-    // const password = name;
-    // this.form.patchValue({name, email, password});
-
+  generateMany() {
     let counter = 0
     const interval = setInterval(() => {
       counter++
@@ -154,9 +149,6 @@ export class AdminPageComponent implements OnInit{
       const name = `admin1_${uuidv4().slice(0, 8)}`;
       const email = `${name}@example.com`;
       const password = 'email';
-
-
-
       this.form.patchValue({name, email, password});
 
       this.onSubmit();
@@ -166,4 +158,13 @@ export class AdminPageComponent implements OnInit{
       }
     }, 500)
   }
+
+  generateOne(){
+    const name = `admin1_${uuidv4().slice(0, 8)}`;
+    const email = `${name}@example.com`;
+    const password = name;
+    this.form.patchValue({name, email, password});
+  }
+
+
 }

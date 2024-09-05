@@ -13,6 +13,7 @@ import { BehaviorSubject, take } from 'rxjs';
 import { TokenService } from '../shared/service/token.service';
 import { InputComponent } from '../shared/input/input.component';
 import { MatButton } from '@angular/material/button';
+import { Router } from '@angular/router';
 
 interface Login {
   email: FormControl<string | null>;
@@ -40,6 +41,7 @@ export class AdminLoginComponent {
   form: FormGroup<Login>;
   disable: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
+  router= inject(Router);
   tokenService = inject(TokenService);
 
   constructor(
@@ -83,7 +85,7 @@ export class AdminLoginComponent {
     this.loginService.login$(login)
       .pipe(take(1))
       .subscribe({
-        next: () => this.onReset(),
+        next: () => this.router.navigate(['admin']),
         error: () => this.disable.next(false)
       }
     )

@@ -4,9 +4,8 @@ import { InputComponent } from '../../shared/input/input.component';
 import { MatButton } from '@angular/material/button';
 import { MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/material/card';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { BehaviorSubject, filter, map, switchMap, take, tap } from 'rxjs';
-import { ILogin, LoginService } from '../../admin-login/service/login.service';
-import { ActivatedRoute } from '@angular/router';
+import { BehaviorSubject, filter, map, switchMap, take } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '../service/admin.service';
 import { IAdmin } from '../service/admin';
 import { v4 as uuidv4 } from 'uuid';
@@ -15,7 +14,7 @@ export interface INewAdminDate {
   id?: number,
   name: string,
   email: string,
-  password: string
+  password?: string
 }
 
 interface AdminForm {
@@ -47,13 +46,12 @@ export class AdminPageComponent implements OnInit{
   disable: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   private route = inject(ActivatedRoute);
-  adminService = inject(AdminService);
+  private adminService = inject(AdminService);
+  private router = inject(Router);
   admin!: IAdmin;
   isAdminEdit: boolean = false;
 
-  constructor(
-    private loginService: LoginService,
-  ) {
+  constructor() {
     this.form = new FormGroup<AdminForm>({
       name: new FormControl(this.admin?.name, [
         Validators.required,
@@ -65,7 +63,6 @@ export class AdminPageComponent implements OnInit{
         Validators.maxLength(255)
       ]),
       password: new FormControl('', [
-        Validators.required,
         Validators.maxLength(255)
       ]),
     });
@@ -73,10 +70,14 @@ export class AdminPageComponent implements OnInit{
 
   ngOnInit() {
     this.route.url.pipe(
-      map(segments => segments.some(segment => segment.path === 'edit')),
-      tap(isEdit => this.title = isEdit? 'Edit Admin' : 'Add Admin'),
+      map(segments => {
+        this.isAdminEdit = segments.some(segment => segment.path === 'edit');
+        this.title = this.isAdminEdit ? 'Edit Admin' : 'Add Admin';
+        !this.isAdminEdit && this.password.setValidators(Validators.required);
+
+        return this.isAdminEdit
+      }),
       filter(Boolean),
-      tap(isEdit => this.isAdminEdit = isEdit),
       switchMap(() => this.route.params),
       switchMap((params) => {
         return this.adminService.getAdminByIndex$(Number(params['id']));
@@ -127,18 +128,19 @@ export class AdminPageComponent implements OnInit{
       ...this.form.value
     } as INewAdminDate ;
 
+    if(!newAdminDate.password) {
+      delete newAdminDate.password
+    }
+
     this.adminService.submitAdmin$(newAdminDate, this.isAdminEdit ?  'edit' : 'add')
       .pipe(take(1))
       .subscribe({
-          next: () => this.onReset(),
-          error: (err) =>  this.disable.next(false)
+          next: () => {
+            this.router.navigate(['admin/admins'])
+          },
+          error: () =>  this.disable.next(false)
         }
       )
-  }
-
-  onReset() {
-    this.disable.next(false);
-    this.form.reset();
   }
 
   generateMany() {

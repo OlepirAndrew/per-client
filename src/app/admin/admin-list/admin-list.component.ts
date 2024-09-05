@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, inject, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, DestroyRef, inject, ViewChild } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule} from '@angular/material/checkbox';
 import { AdminService } from '../service/admin.service';
@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, map, startWith, switchMap, take, tap } from 'rxjs';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 
 @Component({
@@ -23,7 +24,6 @@ export class AdminListComponent implements AfterViewInit {
   router = inject(Router);
   route = inject(ActivatedRoute);
 
-
   displayedColumns: string[] = ['id', 'name', 'email', 'lastLogin', 'createdAt', 'updatedAt', 'actions'];
   adminList: IAdmin[] = [];
   pageSize= 10
@@ -31,6 +31,7 @@ export class AdminListComponent implements AfterViewInit {
   resultsLength = 0;
   isLoadingResults = false;
   disable: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  destroyRef = inject(DestroyRef);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -39,23 +40,15 @@ export class AdminListComponent implements AfterViewInit {
       tap(() => this.isLoadingResults = true),
       startWith(this.getAdmins()),
       switchMap(() => this.getAdmins()),
+      takeUntilDestroyed(this.destroyRef),
       ).subscribe();
   }
 
   getAdmins()  {
      return this.adminService.getAdmins$(this.paginator.pageIndex + 1, this.pageSize)
       .pipe(
-        map(({admins, meta}) => { //<=== error
-
-          if (admins === null) {
-            return [];
-          }
-          console.log('meta', meta);
+        map(({admins, meta}) => {
           this.resultsLength = meta.itemCount;
-
-          return admins;
-        }),
-        tap(admins => {
           this.isLoadingResults = false;
           this.adminList = admins
         }),
@@ -78,9 +71,8 @@ export class AdminListComponent implements AfterViewInit {
   }
 
   edit(admin: IAdmin) {
-    console.log(admin.id)
     this.router.navigate(['edit', admin.id], { relativeTo: this.route });
-    }
+  }
 
   addAdmin() {
     this.router.navigate(['add'], { relativeTo: this.route });

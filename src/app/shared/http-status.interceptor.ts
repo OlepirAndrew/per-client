@@ -4,16 +4,16 @@ import {
   HttpHandlerFn,
   HttpRequest, HttpResponse
 } from '@angular/common/http';
-import { catchError, filter, map, Observable, tap, throwError } from 'rxjs';
+import { catchError, filter, map, Observable, throwError } from 'rxjs';
 import { inject } from '@angular/core';
 import { SnackBarService } from './service/snack-bar.service';
 
+//delete a file
 export function httpStatusInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> {
   const snackBarService = inject(SnackBarService);
 
 
   return next(req).pipe(
-    tap(x => console.log('XXX', x)),
     catchError((error: HttpErrorResponse) => {
       snackBarService.openSnackBar(
         `${error.error.statusCode || error.error.status} ${error.error.message}`,

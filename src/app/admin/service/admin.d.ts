@@ -7,3 +7,10 @@ export interface IAdmin {
   "createdAt": string,
   "updatedAt": string,
 }
+
+export interface IAdminPages {
+  admins: IAdmin[];
+  meta: {
+    itemCount: number,
+  }
+}

@@ -16,6 +16,7 @@ import {
 import { MatPaginator } from '@angular/material/paginator';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { ItemListComponent } from '../shared/item-list.abstract.class';
+import { ItemTableComponent } from '../shared/item-table/item-table.component';
 
 export const DISPLAYED_PERFORMER_COLUMNS = new InjectionToken<string[]>('DisplayedPerformerColumns');
 
@@ -38,7 +39,8 @@ export const DISPLAYED_PERFORMER_COLUMNS = new InjectionToken<string[]>('Display
     MatTable,
     TitleCasePipe,
     MatColumnDef,
-    MatHeaderCellDef
+    MatHeaderCellDef,
+    ItemTableComponent
   ],
   templateUrl: './performers.component.html',
   styleUrl: './performers.component.scss'

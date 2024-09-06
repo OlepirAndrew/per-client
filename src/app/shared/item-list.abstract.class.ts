@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, DestroyRef, inject, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, DestroyRef, inject, signal, ViewChild } from '@angular/core';
 import { AdminService } from '../admin/service/admin.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IAdmin } from './types';
@@ -21,7 +21,7 @@ export abstract class ItemListComponent <T> implements AfterViewInit {
 
   resultsLength = 0;
   isLoadingResults = false;
-  disable: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  disable = signal<boolean>(false);
   destroyRef = inject(DestroyRef);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -47,7 +47,7 @@ export abstract class ItemListComponent <T> implements AfterViewInit {
   }
 
   onDelete(admin: IAdmin) {
-    this.disable.next(true);
+    this.disable.set(true);
     this.itemService.deleteItem$(admin.id)
       .pipe(
         switchMap(() => this.getItems()),
@@ -59,14 +59,14 @@ export abstract class ItemListComponent <T> implements AfterViewInit {
   }
 
   onReset() {
-    this.disable.next(false);
+    this.disable.set(false);
   }
 
   edit(item: T & { id: number }) {
     this.router.navigate(['edit', item.id], { relativeTo: this.route });
   }
 
-  addAdmin() {
+  addItem() {
     this.router.navigate(['add'], { relativeTo: this.route });
   }
 }

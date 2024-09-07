@@ -7,7 +7,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { BehaviorSubject, filter, map, switchMap, take } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '../service/admin.service';
-import { IAdmin } from '../service/admin';
+import { IAdmin } from '../../shared/types';
 import { v4 as uuidv4 } from 'uuid';
 
 export interface INewAdminDate {
@@ -37,10 +37,10 @@ interface AdminForm {
     MatCardTitle,
     ReactiveFormsModule,
   ],
-  templateUrl: './admin-page.component.html',
-  styleUrl: './admin-page.component.scss'
+  templateUrl: './admin-info.component.html',
+  styleUrl: './admin-info.component.scss'
 })
-export class AdminPageComponent implements OnInit{
+export class AdminInfoComponent implements OnInit{
   title= ''
   form!: FormGroup<AdminForm>;
   disable: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -80,7 +80,7 @@ export class AdminPageComponent implements OnInit{
       filter(Boolean),
       switchMap(() => this.route.params),
       switchMap((params) => {
-        return this.adminService.getAdminByIndex$(Number(params['id']));
+        return this.adminService.getItemById$(Number(params['id']));
       }),
       filter(Boolean),
       take(1),
@@ -132,7 +132,7 @@ export class AdminPageComponent implements OnInit{
       delete newAdminDate.password
     }
 
-    this.adminService.submitAdmin$(newAdminDate, this.isAdminEdit ?  'edit' : 'add')
+    this.adminService.submitItem$(newAdminDate, this.isAdminEdit ?  'edit' : 'add')
       .pipe(take(1))
       .subscribe({
           next: () => {

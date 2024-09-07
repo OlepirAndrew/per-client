@@ -1,0 +1,18 @@
+<div class="list-container">
+  <app-item-table
+    (edit)="edit($event)"
+    (onDelete)="onDelete($event)"
+    [isLoadingResults]="isLoadingResults"
+    [itemsList]="itemsList"
+    [displayedColumns]="displayedColumns"
+    [disable]="disable()"
+  >
+    <button mat-raised-button (click)="addItem()">
+      {{buttonName}}
+    </button>
+  </app-item-table>
+
+  <mat-paginator [length]="resultsLength" [pageSize]="pageSize"></mat-paginator>
+</div>
+
+

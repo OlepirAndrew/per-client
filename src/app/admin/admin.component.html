@@ -1,1 +1,11 @@
+<app-header>
+  <ul class="container">
+    <li><a routerLink="/">home</a></li>
+    <li><a routerLink="/admin">dashboard</a></li>
+    <li><a routerLink="/admin/admins">admins-list</a></li>
+    <li><a routerLink="/admin/performers">performers</a></li>
+  </ul>
+  <div class="logout" (click)="logOut()"><a>logout</a></div>
+</app-header>
+
 <router-outlet></router-outlet>

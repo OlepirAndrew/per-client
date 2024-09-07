@@ -9,7 +9,7 @@ import { tokenInterceptor } from './shared/token.interceptor';
 import { httpStatusInterceptor } from './shared/http-status.interceptor';
 import { BASE_API_URL } from './shared/service/http.abstaract.service';
 import { PER_API_URL } from './performers/performers.service';
-import { DISPLAYED_ADMIN_COLUMNS } from './admin/admin-list/admin-list.component';
+import { DISPLAYED_ADMIN_COLUMNS } from './admin/admins/admins.component';
 import { DISPLAYED_PERFORMER_COLUMNS } from './performers/performers.component';
 
 export const appConfig: ApplicationConfig = {
@@ -30,8 +30,8 @@ export const appConfig: ApplicationConfig = {
     ),
     CommonModule,
     provideAnimations(),
-    { provide: BASE_API_URL, useValue: 'http://localhost:4400/admin/admins' },
-    { provide: PER_API_URL, useValue: 'http://localhost:4400/admin/performers' },
+    { provide: BASE_API_URL, useValue: '/admin/admins' },
+    { provide: PER_API_URL, useValue: '/admin/performers' },
     { provide: DISPLAYED_ADMIN_COLUMNS, useValue: ['id', 'name', 'email', 'lastLogin', 'createdAt', 'updatedAt', 'actions'] },
     { provide: DISPLAYED_PERFORMER_COLUMNS, useValue: ['id', 'name', 'nickName', 'email', 'lastLogin', 'createdAt', 'updatedAt', 'actions'] }
 

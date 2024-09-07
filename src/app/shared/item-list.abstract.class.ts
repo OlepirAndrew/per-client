@@ -5,11 +5,9 @@ import { IAdmin } from './types';
 import { BehaviorSubject, map, startWith, switchMap, take, tap } from 'rxjs';
 import { MatPaginator } from '@angular/material/paginator';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { DISPLAYED_ADMIN_COLUMNS } from '../admin/admin-list/admin-list.component';
+import { DISPLAYED_ADMIN_COLUMNS } from '../admin/admins/admins.component';
 
-@Component({
-  template: ''
-})
+@Component({template: ''})
 export abstract class ItemListComponent <T> implements AfterViewInit {
   itemService = inject(AdminService);
   router = inject(Router);

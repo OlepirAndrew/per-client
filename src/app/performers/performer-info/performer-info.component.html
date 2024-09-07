@@ -27,6 +27,7 @@
         [type]="'text'"
         [placeholder]="'name@.email.com'"
         [errorMessage]="'Please enter a valid email address'"
+        [errorName]="'email'"
       ></app-input>
 
       <app-input
@@ -44,6 +45,6 @@
 </mat-card>
 
 
-<button (click)="generateMany()">generateMany</button>
-<button (click)="generateOne()">generateOne</button>
+<button (click)="generateMany()">generate 100</button>
+<button (click)="generateOne()">generate 1</button>
 

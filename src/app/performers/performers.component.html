@@ -1,5 +1,4 @@
 <div class="list-container">
-
   <app-item-table
     (edit)="edit($event)"
     (onDelete)="onDelete($event)"
@@ -9,7 +8,7 @@
     [disable]="disable()"
   >
     <button mat-raised-button (click)="addItem()">
-      Add performer
+      {{buttonName}}
     </button>
   </app-item-table>
 
